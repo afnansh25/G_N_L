@@ -1,16 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   get_next_line.c                                    :+:      :+:    :+:   */
+/*   get_next_line_bonus.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: codespace <codespace@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/02 09:07:03 by codespace         #+#    #+#             */
-/*   Updated: 2025/02/04 16:03:07 by codespace        ###   ########.fr       */
+/*   Updated: 2025/02/04 16:02:11 by codespace        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "get_next_line.h"
+#include "get_next_line_bonus.h"
 
 char	*ft_read_line(int fd, char *buf, char *leftover)
 {
@@ -80,7 +80,7 @@ char	*ft_update_line(char *leftover)
 
 char	*get_next_line(int fd)
 {
-	static char	*leftover;
+	static char	*leftover[1024];
 	char		*line;
 	char		*buffer;
 	
@@ -89,17 +89,17 @@ char	*get_next_line(int fd)
 	buffer = malloc(sizeof(char) * (BUFFER_SIZE + 1));
 	if (!buffer)
 		return (NULL);
-	leftover = ft_read_line(fd, buffer, leftover);
-	if (!leftover)
+	leftover[fd] = ft_read_line(fd, buffer, leftover[fd]);
+	if (!leftover[fd])
 		return (NULL);
-	line = ft_extract_line(leftover);
-	leftover = ft_update_line(leftover);
-	if (!leftover)
+	line = ft_extract_line(leftover[fd]);
+	leftover[fd] = ft_update_line(leftover[fd]);
+	if (!leftover[fd])
 		return (NULL);
-	if (!*leftover)
+	if (!*leftover[fd])
 	{
-		free (leftover);
-		leftover = NULL;
+		free (leftover[fd]);
+		leftover[fd] = NULL;
 	}
 	return (line);
 }
